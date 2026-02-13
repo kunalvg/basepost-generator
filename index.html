@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basepost Generator</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #0052FF;
+      cursor: pointer;
+      border: 3px solid white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #0052FF;
+      cursor: pointer;
+      border: 3px solid white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Lucide React icons as SVG components
+    const Copy = ({ size = 24, className = "" }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+    );
+
+    const RefreshCw = ({ size = 24, className = "" }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <polyline points="23 4 23 10 17 10"></polyline>
+        <polyline points="1 20 1 14 7 14"></polyline>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+      </svg>
+    );
+
+    const Filter = ({ size = 24, className = "" }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+      </svg>
+    );
+
+    const Check = ({ size = 24, className = "" }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    );
+
+    const Sliders = ({ size = 24, className = "" }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <line x1="4" y1="21" x2="4" y2="14"></line>
+        <line x1="4" y1="10" x2="4" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12" y2="3"></line>
+        <line x1="20" y1="21" x2="20" y2="16"></line>
+        <line x1="20" y1="12" x2="20" y2="3"></line>
+        <line x1="1" y1="14" x2="7" y2="14"></line>
+        <line x1="9" y1="8" x2="15" y2="8"></line>
+        <line x1="17" y1="16" x2="23" y2="16"></line>
+      </svg>
+    );
+
+    function BasepostGenerator() {
+      const [currentIdea, setCurrentIdea] = useState('');
+      const [category, setCategory] = useState('');
+      const [copied, setCopied] = useState(false);
+      const [activeFilter, setActiveFilter] = useState('all');
+      const [toneLevel, setToneLevel] = useState(2);
+      const [isGenerating, setIsGenerating] = useState(false);
+
+      const toneLabels = ['Serious Analysis', 'Balanced', 'Maximum Shitpost'];
+
+      const basepostingIdeas = {
+        tradingAlpha: {
+          serious: [
+            "base processed 2.1M transactions yesterday\\n\\nethereeum mainnet: 1.2M\\n\\nthe L2 thesis isn't coming, it's already here 🔵",
+            "just swapped $50k across 3 pools\\n\\ntotal fees: $0.23\\n\\nthis is what crypto infrastructure was supposed to be 🔵",
+            "base DEX volume hit $1.2B this week\\n\\n18 months ago this chain didn't exist\\n\\ncompounding growth is beautiful 🔵",
+            "comparing real costs:\\n\\nmainnet swap: $45 gas\\nbase swap: $0.008 gas\\n\\nthat's a 5,625x improvement\\n\\ndo the math 🔵",
+            "aerodrome TVL crossed $450M\\n\\nbuilt entirely on base\\n\\nthis is what happens when infrastructure doesn't fight you 🔵"
+          ],
+          balanced: [
+            "swapped on base: $0.02\\nswapped on mainnet: $47\\n\\nguess which one i'm using 🔵",
+            "base liquidity went from $0 to $2B+ in 18 months\\n\\nwe're watching crypto evolution in real-time 🔵",
+            "did 15 swaps today testing something\\n\\ntotal gas: $0.31\\n\\nmainnet would've bankrupted me 🔵",
+            "base transaction count just casually passed arbitrum\\n\\nactual users > ponzi liquidity 🔵",
+            "fun fact: base processes more transactions than ethereum mainnet now\\n\\nL2 summer never ended 🔵",
+            "watching base DEX volume climb while fees stay at $0.01\\n\\nthis is the unlock 🔵",
+            "base proving you can have:\\n• low fees\\n• high volume\\n• real liquidity\\n\\nat the same time 🔵"
+          ],
+          shitpost: [
+            "me: i should save money\\n\\nalso me: *does 87 test swaps on base because they're $0.02 each* 🔵",
+            "ethereum: $60 to swap\\nme: maybe i don't need that token\\n\\nbase: $0.02 to swap  \\nme: LET'S GET 47 TOKENS 🔵",
+            "base fees so cheap i forgot what financial responsibility feels like 🔵",
+            "did more swaps on base today than i did pushups this year\\n\\ncost me $0.40 total\\n\\nworth it 🔵",
+            "other chains: *explaining their fee structure*\\nbase: it costs nothing, stop overthinking 🔵",
+            "checked my base tx history\\n\\n284 swaps this month\\n\\ntotal fees: $5.67\\n\\nmainnet could NEVER 🔵"
+          ]
+        },
+
+        aiAgents: {
+          serious: [
+            "AI agents are doing 50k+ autonomous transactions daily on base\\n\\navg cost per action: $0.008\\n\\nthis is the infrastructure layer for agentic economies 🔵🤖",
+            "base + CDP agentkit unlocked something:\\n\\nAI agents that can actually afford to operate 24/7\\n\\nthe economics finally make sense 🔵",
+            "watched an AI agent:\\n• analyze 40 tokens\\n• execute 12 swaps\\n• rebalance portfolio\\n\\ntotal cost: $0.31\\n\\nautonomous finance is here 🔵🤖",
+            "the agentic economy needs:\\n✓ low tx costs\\n✓ high reliability  \\n✓ composable tools\\n\\nbase has all three\\n\\nthis isn't a coincidence 🔵"
+          ],
+          balanced: [
+            "1 in 3 tweets on my timeline is about AI agents on base\\n\\nthe agentic renaissance is actually happening 🔵🤖",
+            "AI agents on base are:\\n• trading 24/7\\n• avg 10k actions/day\\n• spending $0.01 per tx\\n\\nthis changes everything 🔵",
+            "base made AI agents economically viable\\n\\nnow watch what happens when robots can afford to transact 🔵🤖",
+            "shoutout virtual, bankr, and cdp agentkit\\n\\nbuilding the infrastructure for autonomous agents on base 🔵🤖",
+            "AI agents choosing base because even robots aren't paying $40 gas fees 🔵🤖",
+            "base enabling AI agents to:\\n• learn from outcomes\\n• iterate strategies  \\n• operate autonomously\\n\\nall for pocket change 🔵"
+          ],
+          shitpost: [
+            "my AI agent on base:\\n• never sleeps\\n• makes optimal trades\\n• costs $2/month to run\\n\\nbasically better than me at everything 🔵🤖",
+            "AI agent: *executes 1000 perfect transactions*\\ntotal cost: $8\\n\\nme: *does 1 emotional trade*\\ncost: my entire portfolio 🔵",
+            "watched my AI agent make 47 trades overnight\\n\\nwoke up to $12 profit and $0.94 in fees\\n\\ni've been replaced and i'm okay with it 🔵🤖",
+            "AI agents on base learning faster than i learned anything in college\\n\\nand spending less money doing it 🔵",
+            "my base AI agent has better risk management than my last 3 relationships 🔵🤖"
+          ]
+        },
+
+        builderVibes: {
+          serious: [
+            "base launched 18 months ago\\n\\nnow hosts:\\n• 200+ active projects\\n• $2B+ TVL  \\n• 2M+ daily txns\\n\\nthis is what intentional ecosystem building looks like 🔵",
+            "tracking base builder retention:\\n\\n94% of projects that shipped still actively building\\n\\ncompare that to other chains 🔵",
+            "base doesn't have a foundation deploying grants\\n\\nit has builders who want to build here\\n\\nthat's the real moat 🔵",
+            "what base got right:\\n• infrastructure first\\n• culture second  \\n• incentives last\\n\\nmost chains do this backwards 🔵"
+          ],
+          balanced: [
+            "base builders hit different\\n\\nthey ship, they iterate, they don't stop 🔵",
+            "other L2s: 47-page roadmap\\nbase builders: already shipped v3 🔵",
+            "watching base go from 'coinbase's L2' to 'THE builder chain' in 18 months\\n\\nstudy the playbook 🔵",
+            "base ecosystem quality bar is wild\\n\\nno rug pulls, no ghost chains, just people building real shit 🔵",
+            "love that base projects actually maintain their codebases\\n\\nbar is low but they're clearing it 🔵🛠️",
+            "base proving that good infra + good vibes = builders who stay 🔵"
+          ],
+          shitpost: [
+            "base builders:\\n• wake up\\n• ship\\n• don't explain\\n• refuse to elaborate  \\n• ship again 🔵",
+            "other chains: 'coming Q3 2025'\\nbase builders: 'shipped last tuesday' 🔵",
+            "base builders deploy faster than i respond to texts 🔵",
+            "watching base builders cook is better than any netflix show\\n\\nand it's free 🔵📺",
+            "base: where 'soon™' actually means 'probably already live' 🔵"
+          ]
+        },
+
+        ecosystem: {
+          serious: [
+            "base metrics that matter:\\n\\n• 2.3M daily active users\\n• 85% user retention  \\n• growing 40% MoM\\n\\nthese aren't vanity metrics, this is adoption 🔵",
+            "base went from 0 to top 3 L2 in 18 months\\n\\nno token\\nno ponzinomics  \\njust infrastructure + execution 🔵",
+            "base transaction composition:\\n\\n60% defi\\n25% social  \\n10% gaming\\n5% other\\n\\nthis diversity = sustainability 🔵",
+            "comparing ecosystem health:\\n\\nbase: 94% real users\\nother L2s: 60% real users\\n\\nauthenticity compounds 🔵"
+          ],
+          balanced: [
+            "base doing 2.1M daily transactions\\n\\neth mainnet doing 1.2M\\n\\nthe future is already here 🔵",
+            "base TVL went from $0 to $2B+ in 18 months\\n\\nno farming incentives\\nno token emissions  \\njust people choosing to build here 🔵",
+            "base ecosystem is compounding\\n\\nevery new project makes it better for existing ones\\n\\nnetwork effects are beautiful 🔵✨",
+            "fun stat: base has more daily active addresses than ethereum mainnet now\\n\\nL2 thesis won 🔵",
+            "watching base grow:\\n\\nweek 1: interesting\\nmonth 3: promising  \\nmonth 12: inevitable  \\nmonth 18: unstoppable 🔵"
+          ],
+          shitpost: [
+            "base ecosystem growing faster than my to-do list\\n\\nand that's saying something 🔵",
+            "other L2s: *explaining tokenomics*\\nbase: *casually becomes top 3 L2* 🔵",
+            "base went from 'coinbase's testnet' to 'wait this is actually good' in record time 🔵",
+            "base proving you don't need ponzinomics\\n\\njust don't suck 🔵",
+            "the base ecosystem in 6 months gonna be absolutely unhinged 🔵🚀"
+          ]
+        },
+
+        shitposts: {
+          serious: [],
+          balanced: [
+            "not on base < on base\\n\\nit's really that simple 🔵",
+            "still baseposting during the big game 🔵",
+            "when she asks if you're okay\\n\\nbut your basepost only got 12 likes 🔵😔",
+            "base really said 'what if crypto was good' and everyone said yes 🔵"
+          ],
+          shitpost: [
+            "if your circle isn't discussing:\\n• vibe coding\\n• baseposting\\n• frame mogging  \\n• agent maxxing\\n\\nyou have normal friends 🔵",
+            "me: i should diversify across chains\\nalso me: *goes 100% base* 🔵",
+            "base so good it makes other L2s look like L3s 🔵",
+            "therapist: you need to touch grass\\nme: i'm touching base 🔵💙",
+            "ethereum maxis explaining decentralization\\nbase enjoyers: it goes brrrr 🔵",
+            "imagine not being onchain rn\\n\\ncouldn't be me 🔵",
+            "base transactions: ⚡️\\nother chains: 🐌\\n\\nsimple as 🔵",
+            "sir this is a base, not a wendy's 🔵",
+            "normalized being extremely online\\nnow normalizing being extremely onchain 🔵",
+            "other chains: *10-step process*\\nbase: literally just vibes 🔵",
+            "woke: being onchain\\nbroke: not being onchain  \\nbespoke: baseposting 🔵",
+            "my personality is 70% base and 30% coffee\\n\\nand i'm okay with that 🔵☕",
+            "base proving that crypto can be:\\n• fast\\n• cheap  \\n• fun\\n\\nat the same time 🔵"
+          ]
+        },
+
+        consumerApps: {
+          serious: [
+            "base consumer apps hitting web2 UX parity\\n\\nthis is the unlock for mainstream adoption\\n\\ncrypto that doesn't feel like crypto 🔵",
+            "consumer apps on base:\\n\\n✓ instant transactions\\n✓ sub-cent fees  \\n✓ polished UX\\n\\nthis is what we promised normies in 2017 🔵",
+            "base making it possible to build consumer apps that:\\n\\n• work instantly\\n• cost nothing  \\n• feel natural\\n\\ninfrastructure as competitive advantage 🔵"
+          ],
+          balanced: [
+            "base has 40+ consumer apps that my non-crypto friends could actually use\\n\\nthis is the milestone 🔵",
+            "consumer apps on base don't feel like crypto apps\\n\\nthey just feel like... apps\\n\\nthat's the whole point 🔵",
+            "watching base consumer apps ship\\n\\nthey're actually competing with web2 UX now\\n\\nwe made it 🔵✨",
+            "base consumer apps proving that crypto UX can be:\\n• simple\\n• fast  \\n• actually good 🔵",
+            "showed my mom a base app\\n\\nshe said 'this is nice dear'\\n\\nBIGGEST W 🔵"
+          ],
+          shitpost: [
+            "base consumer apps so smooth my normie friends don't even realize they're using crypto\\n\\nmission accomplished 🔵",
+            "base apps: web2 UX, web3 benefits\\nother chains: web3 UX, web3 problems 🔵",
+            "accidentally onboarded 5 normies to base this week\\n\\nthey think it's just 'an app'\\n\\nperfect 🔵",
+            "base consumer apps making crypto feel normal\\n\\nwhich is exactly what we needed 🔵"
+          ]
+        },
+
+        infra: {
+          serious: [
+            "base infrastructure decisions paying off:\\n\\n• 99.99% uptime\\n• smooth upgrades  \\n• predictable performance\\n\\ntrust is earned in milliseconds, lost in downtime 🔵",
+            "base achieved stage 1 decentralization\\n\\nprogress toward stage 2 is transparent and measurable\\n\\nreal decentralization, not theater 🔵",
+            "base architecture:\\n\\noptimistic rollups + EVM compatibility + coinbase reliability\\n\\neach piece matters 🔵⚙️"
+          ],
+          balanced: [
+            "base infrastructure improvements:\\n\\n2023: solid foundation\\n2024: impressive scale  \\n2025: actually unbelievable\\n\\ncompounding 🔵",
+            "base infra team doesn't miss\\n\\nevery upgrade is smooth\\nevery update is communicated  \\n\\nthis is how you build trust 🔵",
+            "base achieving stage 1 decentralization while maintaining 99.99% uptime\\n\\nyou can have both 🔵",
+            "the boring stuff matters:\\n\\nbase's infrastructure decisions from 18 months ago\\nare why everything works today 🔵⚙️"
+          ],
+          shitpost: [
+            "base infrastructure so reliable it's boring\\n\\nwhich is the highest compliment 🔵",
+            "base: *casually achieves stage 1*\\nme: oh cool\\n\\n*5 seconds later*\\n\\nWAIT THAT'S HUGE 🔵",
+            "base infra team making upgrades look easy\\n\\nstop flexing 🔵",
+            "base uptime: 99.99%\\nmy gym attendance: 0.01% 🔵"
+          ]
+        },
+
+        onchainLife: {
+          serious: [
+            "being onchain isn't about transactions\\n\\nit's about believing in open protocols and voting with your actions\\n\\nevery tx is a choice 🔵",
+            "went fully onchain 8 months ago\\n\\nbase made it economically viable\\n\\nlow friction unlocks genuine adoption 🔵"
+          ],
+          balanced: [
+            "fully onchain now and base made it possible\\n\\ncheap fees + good UX = sustainable lifestyle 🔵",
+            "going onchain with base was the best decision i made this year\\n\\nno cap 🔵",
+            "onchain is the new online\\n\\nbase is the proof of concept 🔵",
+            "base making 'onchain' feel natural instead of performative 🔵✨",
+            "went fully onchain using base\\n\\nlife legitimately improved\\n\\nwild 🔵💙"
+          ],
+          shitpost: [
+            "went onchain\\nnever looked back\\n\\nmostly because mainnet gas would bankrupt me 🔵",
+            "onchain lifestyle hitting different when transactions cost $0.02 🔵",
+            "being onchain: based\\nbeing onchain affordably: based on base 🔵",
+            "tried to go back to centralized services\\n\\nforgot how to pay $3 for a transfer\\n\\nruined forever 🔵"
+          ]
+        },
+
+        engagement: {
+          serious: [
+            "what aspects of base's infrastructure do you find most compelling?\\n\\nalways curious about different technical perspectives 🔵",
+            "which base projects are you watching closely?\\n\\nbuilding my research list 🔵"
+          ],
+          balanced: [
+            "what base project are you most bullish on?\\n\\ni'll start: [reply with yours] 🔵",
+            "poll: what brought you to base?\\n\\nA) low fees\\nB) ecosystem  \\nC) UX\\nD) vibes\\nE) all of the above 🔵",
+            "which base app do you use daily?\\n\\ngenuinely trying to expand my rotation 🔵",
+            "what made you choose base over other L2s?\\n\\norigin stories welcome 🔵",
+            "complete the sentence:\\n\\nbase is _____ 🔵\\n\\ngo:",
+            "how has base changed your onchain behavior?\\n\\nactually curious 🔵",
+            "describe the base ecosystem in exactly 3 words\\n\\ngo: 🔵"
+          ],
+          shitpost: [
+            "wrong answers only:\\n\\nbase is _____ 🔵",
+            "drop your most unhinged base take\\n\\ni'll wait 🔵",
+            "tag someone who needs to get onchain\\n\\ndo it 🔵",
+            "ratio check: how many base transactions have you done?\\n\\nA) 0-100\\nB) 100-1000  \\nC) 1000+\\nD) lost count 🔵"
+          ]
+        },
+
+        philosophy: {
+          serious: [
+            "base isn't just infrastructure\\n\\nit's a thesis on crypto adoption:\\n\\nUX and decentralization aren't trade-offs\\nthey're prerequisites 🔵💭",
+            "the best time to build onchain was 5 years ago\\n\\nthe second best time is now\\n\\nbase proves execution compresses timelines 🔵",
+            "technology wins when paired with intentional culture\\n\\ncode and community are equally important\\n\\nbase gets this 🔵✨",
+            "watching base proves something:\\n\\nyou can be backed by coinbase AND be credibly decentralized\\n\\nthese aren't contradictions 🔵"
+          ],
+          balanced: [
+            "base isn't just a blockchain\\n\\nit's a belief that crypto can be accessible without compromise 🔵💭",
+            "we're not early\\nwe're exactly on time for the onchain revolution 🔵⏰",
+            "the best time to go onchain was yesterday\\n\\nthe second best is now 🔵",
+            "in a world of noise, base is signal 🔵📡",
+            "base proving that better tech + better vibes = unstoppable 🔵✨",
+            "we're not just users\\n\\nwe're co-creators of the onchain future 🔵🛠️",
+            "base optimizes for people, not just protocols\\n\\nthis is the difference 🔵"
+          ],
+          shitpost: [
+            "base: where code meets culture meets vibes 🔵✨",
+            "the question isn't why base\\n\\nit's why NOT base\\n\\ncheckmate 🔵",
+            "base teaching crypto that having fun is actually allowed 🔵",
+            "base said 'what if we just made it good'\\n\\nand everyone was like 'wait you can do that?' 🔵"
+          ]
+        }
+      };
+
+      const categoryMeta = {
+        tradingAlpha: { name: 'Trading Alpha', icon: '💰', type: 'analytical' },
+        aiAgents: { name: 'AI Agents', icon: '🤖', type: 'analytical' },
+        builderVibes: { name: 'Builder Culture', icon: '🛠️', type: 'observation' },
+        ecosystem: { name: 'Ecosystem', icon: '🌐', type: 'analytical' },
+        shitposts: { name: 'Shitposts', icon: '😂', type: 'meme' },
+        consumerApps: { name: 'Consumer Apps', icon: '📱', type: 'observation' },
+        infra: { name: 'Infrastructure', icon: '⚙️', type: 'analytical' },
+        onchainLife: { name: 'Onchain Life', icon: '🔗', type: 'observation' },
+        engagement: { name: 'Engagement', icon: '💬', type: 'engagement' },
+        philosophy: { name: 'Philosophy', icon: '🧠', type: 'philosophical' }
+      };
+
+      const filterOptions = {
+        all: 'All',
+        analytical: 'Analytical',
+        meme: 'Memes',
+        observation: 'Observations',
+        engagement: 'Community',
+        philosophical: 'Philosophy'
+      };
+
+      const getFilteredCategories = () => {
+        if (activeFilter === 'all') return Object.keys(basepostingIdeas);
+        return Object.keys(basepostingIdeas).filter(
+          key => categoryMeta[key].type === activeFilter
+        );
+      };
+
+      const getToneKey = () => {
+        if (toneLevel === 0) return 'serious';
+        if (toneLevel === 1) return 'balanced';
+        return 'shitpost';
+      };
+
+      const generateIdea = (selectedCategory = null) => {
+        setIsGenerating(true);
+        
+        setTimeout(() => {
+          const filteredCategories = getFilteredCategories();
+          const categories = selectedCategory ? [selectedCategory] : filteredCategories;
+          const chosenCategory = categories[Math.floor(Math.random() * categories.length)];
+          
+          const toneKey = getToneKey();
+          const ideasByTone = basepostingIdeas[chosenCategory][toneKey];
+          
+          const ideas = ideasByTone && ideasByTone.length > 0 
+            ? ideasByTone 
+            : basepostingIdeas[chosenCategory]['balanced'];
+          
+          const randomIdea = ideas[Math.floor(Math.random() * ideas.length)];
+          
+          setCurrentIdea(randomIdea);
+          setCategory(chosenCategory);
+          setCopied(false);
+          setIsGenerating(false);
+        }, 400);
+      };
+
+      const copyToClipboard = () => {
+        navigator.clipboard.writeText(currentIdea);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      };
+
+      const getCharCount = () => currentIdea.length;
+      const getTweetStatus = () => {
+        const count = getCharCount();
+        if (count <= 280) return { color: 'text-green-600', label: 'Perfect length', bg: 'bg-green-50' };
+        if (count <= 500) return { color: 'text-yellow-600', label: 'Thread needed', bg: 'bg-yellow-50' };
+        return { color: 'text-red-600', label: 'Too long', bg: 'bg-red-50' };
+      };
+
+      useEffect(() => {
+        generateIdea();
+      }, []);
+
+      const status = getTweetStatus();
+
+      return (
+        <div className="min-h-screen bg-gray-50">
+          <div className="max-w-5xl mx-auto px-6 py-16">
+            
+            {/* Header */}
+            <div className="text-center mb-16">
+              <div className="flex items-center justify-center mb-6">
+                <div className="text-6xl">🔵</div>
+              </div>
+
+              <h1 className="text-5xl font-bold text-gray-900 mb-3" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+                Basepost Generator
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Generate authentic baseposts for the Base ecosystem
+              </p>
+            </div>
+
+            {/* Main Content */}
+            <div className="space-y-6">
+              
+              {/* Tone Slider */}
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sliders size={18} className="text-blue-600" />
+                  <h2 className="text-sm font-semibold text-gray-900">Tone</h2>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between text-xs text-gray-500 px-1">
+                    <span>Serious Analysis</span>
+                    <span>Balanced</span>
+                    <span>Maximum Shitpost</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="2"
+                    step="1"
+                    value={toneLevel}
+                    onChange={(e) => setToneLevel(parseInt(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                    style={{
+                      background: `linear-gradient(to right, #0052FF 0%, #0052FF ${toneLevel * 50}%, #e5e7eb ${toneLevel * 50}%, #e5e7eb 100%)`
+                    }}
+                  />
+                  <div className="text-center">
+                    <span className="inline-block bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
+                      {toneLabels[toneLevel]}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Filter Section */}
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Filter size={18} className="text-blue-600" />
+                  <h2 className="text-sm font-semibold text-gray-900">Filter by Type</h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(filterOptions).map(([key, label]) => (
+                    <button
+                      key={key}
+                      onClick={() => {
+                        setActiveFilter(key);
+                        generateIdea();
+                      }}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                        activeFilter === key
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Generated Post Card */}
+              <div className={`bg-white rounded-xl border border-gray-200 p-8 transition-all duration-500 ${isGenerating ? 'opacity-50 scale-98' : 'opacity-100 scale-100'}`}>
+                
+                {/* Category Badge */}
+                {category && (
+                  <div className="flex items-center justify-between mb-6">
+                    <div className={`flex items-center gap-2 transition-all duration-300 ${isGenerating ? 'opacity-0' : 'opacity-100'}`}>
+                      <span className="text-2xl">{categoryMeta[category].icon}</span>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {categoryMeta[category].name}
+                      </span>
+                    </div>
+                    <div className={`flex items-center gap-3 transition-all duration-300 ${isGenerating ? 'opacity-0' : 'opacity-100'}`}>
+                      <span className="text-sm text-gray-500 font-mono">
+                        {getCharCount()}/280
+                      </span>
+                      <span className={`text-xs px-3 py-1 rounded-full ${status.bg} ${status.color} font-medium`}>
+                        {status.label}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Post Content */}
+                <div className="bg-gray-50 rounded-lg p-6 mb-6 min-h-[200px] border border-gray-100">
+                  <p className={`text-gray-900 text-lg leading-relaxed whitespace-pre-wrap transition-all duration-500 ${isGenerating ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`} style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+                    {currentIdea || 'Click generate to create a basepost 🔵'}
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => generateIdea()}
+                    disabled={isGenerating}
+                    className={`flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2 ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <RefreshCw size={18} className={isGenerating ? 'animate-spin' : ''} />
+                    {isGenerating ? 'Generating...' : 'Generate New Post'}
+                  </button>
+                  <button
+                    onClick={copyToClipboard}
+                    className="bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+                    disabled={!currentIdea || isGenerating}
+                  >
+                    {copied ? (
+                      <>
+                        <Check size={18} />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={18} />
+                        Copy
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Categories Grid */}
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <h2 className="text-sm font-semibold text-gray-900 mb-4">Quick Select Category</h2>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                  {getFilteredCategories().map((key) => (
+                    <button
+                      key={key}
+                      onClick={() => generateIdea(key)}
+                      disabled={isGenerating}
+                      className={`p-4 rounded-lg text-center transition-all border ${
+                        category === key
+                          ? 'bg-blue-50 border-blue-200'
+                          : 'bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                      } ${isGenerating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      <div className="text-3xl mb-2">{categoryMeta[key].icon}</div>
+                      <div className="text-xs font-medium text-gray-700">{categoryMeta[key].name}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="mt-16 text-center">
+              <p className="text-gray-500 text-sm">
+                Built for the Base community • onchain is the new online 🔵
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<BasepostGenerator />);
+  </script>
+</body>
+</html>
